@@ -1,0 +1,149 @@
+// 增加后的单词列表
+const wordList = [
+    "cafeteria", "campus", "diploma", "laboratory", "textbook", "volunteer",
+    "participate", "challenge", "explore", "recommend", "concentrate", "expand",
+    "enthusiastic", "independent", "responsible", "beneficial", "complex", "dynamic",
+    "ambulance", "apartment", "appliance", "attitude", "bachelor", "balcony",
+    "barbecue", "basement", "brochure", "candidate", "cassette", "category",
+    "ceiling", "cellar", "champion", "channel", "chapel", "character", "circuit",
+    "circumstance", "classical", "clay", "clinic", "colleague", "combination",
+    "comedy", "comment", "commerce", "committee", "companion", "competent",
+    "compound", "comprehension", "compromise", "concrete", "conflict", "confuse",
+    "congratulate", "connection", "conscience", "consequence", "conservative",
+    "considerate", "consist", "constant", "constitution", "construct", "consult",
+    "consume", "contemporary", "content", "contest", "continent", "contradict",
+    "contrary", "contribution", "convenience", "conventional", "convey", "convince",
+    "coordinate", "corporation", "correspond", "cottage", "council", "county",
+    "courtyard", "crash", "crawl", "criterion", "crucial", "crush", "cuisine",
+    "curious", "curtain", "cushion", "database", "deadline", "debate", "debt",
+    "decent", "decorate", "decrease", "defence", "define", "definite", "defy",
+    "delicate", "delight", "deliver", "demanding", "democracy", "demonstrate",
+    "departure", "dependent", "deposit", "depress", "depth", "description",
+    "deserve", "design", "desperate", "destination", "destruction", "detail",
+    "detective", "determine", "devote", "diagram", "dialect", "diameter",
+    "dictionary", "diet", "differ", "dimension", "dinosaur", "dioxide", "dip",
+    "diplomat", "directory", "discipline", "discount", "discourage", "discover",
+    "discrimination", "discuss", "disease", "disgust", "dismiss", "disorder",
+    "display", "disposal", "dispute", "dissolve", "distance", "distinct",
+    "distinguish", "distribute", "district", "diverse", "divide", "divorce",
+    "document", "domestic", "dominant", "donate", "dormitory", "download",
+    "drain", "drama", "drawback", "drawer", "drown", "drugstore", "dumb",
+    "dynasty", "eager", "eagle", "earnest", "earthquake", "ease", "echo",
+    "ecology", "economy", "edition", "editor", "educate", "efficient", "effort",
+    "elect", "election", "electricity", "elegant", "element", "elevate", "elevator",
+    "eliminate", "embarrass", "embassy", "emergency", "emotion", "emphasis",
+    "empire", "employ", "employee", "employment", "enable", "enclose", "encounter",
+    "encourage", "endless", "endure", "energetic", "enforce", "engage", "engine",
+    "engineer", "enhance", "enlarge", "enormous", "enquire", "enrich", "enroll",
+    "ensure", "enterprise", "entertain", "enthusiasm", "entire", "entitle",
+    "entry", "environment", "envy", "epidemic", "episode", "equality", "equip",
+    "equipment", "equivalent", "era", "erase", "erect", "error", "erupt",
+    "escape", "essence", "essential", "establish", "estimate", "evaluate",
+    "evidence", "evident", "evolution", "exaggerate", "exceed", "excellent",
+    "except", "exchange", "excite", "exclude", "exclusive", "excursion",
+    "execute", "executive", "exhibit", "exhibition", "exist", "exit", "expand",
+    "expect", "expense", "experience", "experiment", "expert", "explain",
+    "explicit", "explode", "exploit", "explore", "export", "expose", "express",
+    "expression", "extend", "extension", "extraordinary", "extreme"
+];
+
+let gameBoard;
+let currentWordIndex = 0;
+
+function createGameBoard() {
+    const bingoTable = document.getElementById('bingo - table');
+    gameBoard = [];
+    for (let i = 0; i < 5; i++) {
+        const row = [];
+        const tableRow = document.createElement('tr');
+        for (let j = 0; j < 5; j++) {
+            const randomIndex = Math.floor(Math.random() * wordList.length);
+            const cell = document.createElement('td');
+            cell.textContent = wordList[randomIndex];
+            cell.addEventListener('click', function () {
+                this.style.textDecoration = 'line - through';
+                checkWin();
+            });
+            tableRow.appendChild(cell);
+            row.push(wordList[randomIndex]);
+        }
+        gameBoard.push(row);
+        bingoTable.appendChild(tableRow);
+    }
+}
+
+function displayNextWord() {
+    if (currentWordIndex < wordList.length) {
+        const currentWordElement = document.getElementById('current - word');
+        currentWordElement.textContent = "当前单词: " + wordList[currentWordIndex];
+        currentWordIndex++;
+    } else {
+        document.getElementById('next - word - button').disabled = true;
+    }
+}
+
+function checkWin() {
+    // 检查行
+    for (let i = 0; i < 5; i++) {
+        let rowWin = true;
+        for (let j = 0; j < 5; j++) {
+            if (!gameBoard[i][j].style.textDecoration.includes('line - through')) {
+                rowWin = false;
+                break;
+            }
+        }
+        if (rowWin) {
+            showWinMessage();
+            return;
+        }
+    }
+
+    // 检查列
+    for (let j = 0; j < 5; j++) {
+        let colWin = true;
+        for (let i = 0; i < 5; i++) {
+            if (!gameBoard[i][j].style.textDecoration.includes('line - through')) {
+                colWin = false;
+                break;
+            }
+        }
+        if (colWin) {
+            showWinMessage();
+            return;
+        }
+    }
+
+    // 检查对角线1
+    let diag1Win = true;
+    for (let i = 0; i < 5; i++) {
+        if (!gameBoard[i][i].style.textDecoration.includes('line - through')) {
+            diag1Win = false;
+            break;
+        }
+    }
+    if (diag1Win) {
+        showWinMessage();
+        return;
+    }
+
+    // 检查对角线2
+    let diag2Win = true;
+    for (let i = 0; i < 5; i++) {
+        if (!gameBoard[i][4 - i].style.textDecoration.includes('line - through')) {
+            diag2Win = false;
+            break;
+        }
+    }
+    if (diag2Win) {
+        showWinMessage();
+    }
+}
+
+function showWinMessage() {
+    const resultDisplay = document.getElementById('result - display');
+    resultDisplay.textContent = "Bingo! 你赢了！";
+    document.getElementById('next - word - button').disabled = true;
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    createGameBoard();
